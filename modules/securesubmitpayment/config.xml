@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>securesubmitpayment</name>
+            <displayName><![CDATA[SecureSubmit]]></displayName>
+            <version><![CDATA[1.0.0]]></version>
+            <description><![CDATA[Payments made easy - Start securely accepting credit card payments instantly.]]></description>
+            <author><![CDATA[Heartland Payment Systems]]></author>
+            <tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall>Warning: Are you sure you want to uninstall this module?</confirmUninstall>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries>us</limited_countries>
+        </module>

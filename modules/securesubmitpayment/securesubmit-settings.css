@@ -1,0 +1,122 @@
+.securesubmit-module-wrapper { 
+	clear: both; 
+	margin: 0px auto; 
+	min-width: 930px; 
+	max-width: 1024px; 
+	overflow: hidden; 
+}
+
+.securesubmit-module-header { 
+	padding: 10px;
+	background-color: #555;
+	background-image: -o-linear-gradient(90deg,#555 0,#222 100%);
+	background-image: -moz-linear-gradient(90deg,#555 0,#222 100%);
+	background-image: -webkit-linear-gradient(90deg,#555 0,#222 100%);
+	background-image: -ms-linear-gradient(90deg,#555 0,#222 100%);
+	background-image: linear-gradient(180deg,#555 0,#222 100%);
+	clear: both; 
+	margin-bottom: 10px; 
+	padding-top: 15px; 
+	overflow: hidden; 
+}
+
+.api-key-container {
+	margin: 10px;
+}
+
+.api-key-container h4 {
+	color: #F26722;
+	margin: 0;
+	font-weight: normal;
+	font-size: 16px;
+}
+
+.api-keys {
+	width: auto;
+	background-color: #FAFAFA;
+	padding: 5px;
+	border: 1px solid #EEE;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 5px 0 20px 0;
+}
+
+.api-keys .api-key-header div {
+	font-weight: bold;
+	font-size: 105%;
+}
+.api-keys .api-key-box div, .api-keys .api-key-header div {
+	padding: 2px 5px;
+	margin: 0 5px;
+}
+
+.api-keys .api-key-key {
+	width: 450px;
+}
+
+.api-keys input {
+	width: 390px;
+}
+
+.btn, 
+.btn:visited {
+	background-color: #F60!important;
+	color: #FFF;
+	-webkit-transition: background-color .25s ease-in;
+	-moz-transition: background-color .25s ease-in;
+	-o-transition: background-color .25s ease-in;
+	transition: background-color .25s ease-in;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	display: inline-block;
+	zoom: 1;
+	-webkit-transition: background-color .25s ease-in,color .25s ease-in;
+	-moz-transition: background-color .25s ease-in,color .25s ease-in;
+	-ms-transition: background-color .25s ease-in,color .25s ease-in;
+	-o-transition: background-color .25s ease-in,color .25s ease-in;
+	transition: background-color .25s ease-in,color .25s ease-in;
+	padding: 5px 12px;
+	text-decoration: none;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+	position: relative;
+	cursor: pointer;
+	border: 0;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.account-mode {
+	padding-bottom: 25px;
+}
+
+.account-mode input{
+	margin: 10px;
+}
+
+.container {
+	margin: 0 10px;
+}
+
+.settings-btn {
+	margin-top: 25px;
+	font-size: 14px;
+	padding: 10px 24px;
+}
+
+.technical-checks {
+	width: 450px;
+	float: right;
+	background-color: #F0F0F0;
+	padding: 0 10px 10px 10px;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
