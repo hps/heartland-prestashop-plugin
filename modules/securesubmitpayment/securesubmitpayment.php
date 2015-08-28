@@ -404,56 +404,51 @@ class SecureSubmitPayment extends PaymentModule
 				</div>
 				<h2>Set your API Keys</h2>
 				<p>If you have not done so already, you can create an account by clicking the \'Sign up for free\' button above.<br />You can then obtain your API Keys from: Account Settings -> API Keys</p>
-				<div class="clearfix api-key-container">
-                    <div class="clearfix api-key-title">
-                        <div class="left"><h4 class="ng-binding">Test</h4></div>
-                    </div>
-                    <div class="api-keys">
-                        <div class="api-key-header clearfix">
-                            <div class="left api-key-key">Secret Key</div>
-                            <div class="left api-key-key">Public Key</div>
-                        </div>
-                        <div class="api-key-box clearfix">
-                            <div class="left api-key-key api-key ng-binding"><input type="password" name="securesubmit_secret_key_test" value="'.Tools::safeOutput(Configuration::get('HPS_SECRET_KEY_TEST')).'" /></div>
-                            <div class="left api-key-key api-key ng-binding"><input type="text" name="securesubmit_public_key_test" value="'.Tools::safeOutput(Configuration::get('HPS_PUBLIC_KEY_TEST')).'" /></div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="clearfix api-key-container">
-                    <div class="clearfix api-key-title">
-                        <div class="left"><h4 class="ng-binding">Live</h4></div>
-                    </div>
-                    <div class="api-keys">
-                        <div class="api-key-header clearfix">
-                            <div class="left api-key-key">Secret Key</div>
-                            <div class="left api-key-key">Public Key</div>
-                        </div>
-                        <div class="api-key-box clearfix">
-                            <div class="left api-key-key api-key ng-binding"><input type="password" name="securesubmit_secret_key_live" value="'.Tools::safeOutput(Configuration::get('HPS_SECRET_KEY_LIVE')).'" /></div>
-                            <div class="left api-key-key api-key ng-binding"><input type="text" name="securesubmit_public_key_live" value="'.Tools::safeOutput(Configuration::get('HPS_PUBLIC_KEY_LIVE')).'" /></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container">';
+				<h2 style="color: #F60;">Test</h2>
+				<table width="100%">
+					<tr>
+						<td width="50%;"><strong>Public Key</strong></td>
+						<td><strong>Secret Key</string></td>
+					</tr>
+					<tr>
+						<td><input style="width: 450px;" type="text" name="securesubmit_public_key_test" value="'.Tools::safeOutput(Configuration::get('HPS_PUBLIC_KEY_TEST')).'" /></td>
+						<td><input style="width: 450px;" type="text" name="securesubmit_secret_key_test" value="'.Tools::safeOutput(Configuration::get('HPS_SECRET_KEY_TEST')).'" /></td>
+					</tr>
+				</table>
 
-					$statuses_options = array(array('name' => 'securesubmit_payment_status', 'label' => $this->l('Order status in case of sucessfull payment:'), 'current_value' => Configuration::get('HPS_PAYMENT_ORDER_STATUS')));
-					foreach ($statuses_options as $status_options)
-					{
-						$output .= '
-							<h4>'.$status_options['label'].'</h4>
-							<div>
-								<select name="'.$status_options['name'].'">';
-									foreach ($statuses as $status)
-										$output .= '<option value="'.(int)$status['id_order_state'].'"'.($status['id_order_state'] == $status_options['current_value'] ? ' selected="selected"' : '').'>'.Tools::safeOutput($status['name']).'</option>';
-						$output .= '
-								</select>
-							</div>';
-					}
+				<h2 style="color: #F60;">Live</h2>
+				<table width="100%">
+					<tr>
+						<td width="50%;"><strong>Public Key</strong></td>
+						<td><strong>Secret Key</string></td>
+					</tr>
+					<tr>
+						<td><input style="width: 450px;" type="text" name="securesubmit_public_key_live" value="'.Tools::safeOutput(Configuration::get('HPS_PUBLIC_KEY_LIVE')).'" /></td>
+						<td><input style="width: 450px;" type="text" name="securesubmit_secret_key_live" value="'.Tools::safeOutput(Configuration::get('HPS_SECRET_KEY_LIVE')).'" /></td>
+					</tr>
+				</table>
 
+
+                ';
+
+				$statuses_options = array(array('name' => 'securesubmit_payment_status', 'label' => $this->l('Order status in case of sucessfull payment:'), 'current_value' => Configuration::get('HPS_PAYMENT_ORDER_STATUS')));
+				foreach ($statuses_options as $status_options)
+				{
 					$output .= '
-					<div><input type="submit" class="settings-btn btn" name="SubmitSecureSubmit" value="Save Settings" /></div>
-				</div>
+						<h4>'.$status_options['label'].'</h4>
+						<div>
+							<select name="'.$status_options['name'].'">';
+								foreach ($statuses as $status)
+									$output .= '<option value="'.(int)$status['id_order_state'].'"'.($status['id_order_state'] == $status_options['current_value'] ? ' selected="selected"' : '').'>'.Tools::safeOutput($status['name']).'</option>';
+					$output .= '
+							</select>
+						</div>';
+				}
+
+				$output .= '<br>
+				<div><input type="submit" class="settings-btn btn" name="SubmitSecureSubmit" value="Save Settings" /></div>
+
 			</section>
 			<div class="clear"></div>
 			<br />
