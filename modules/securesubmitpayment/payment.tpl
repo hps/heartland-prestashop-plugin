@@ -1,5 +1,6 @@
 <div class="securesubmitFormContainer">
 	<h3><img alt="Secure Icon" class="secure-icon" src="{$module_dir}img/secure-icon.png" />{l s='Pay by Credit Card' mod='securesubmitpayment'}</h3>
+	<img alt="Accepted Cards" src="{$module_dir}img/credit-card-logos.png" />
 	<div id="securesubmit-ajax-loader"> 
 		<span>{l s='Your payment is being processed...' mod='securesubmitpayment'}</span>
 		<img src="{$module_dir}img/ajax-loader.gif" alt="Loader Icon" />
@@ -28,7 +29,6 @@
 				</select>
 				<span> / </span>
 				<select id="year" name="year" class="securesubmit-card-expiry-year">
-					<option value="2014">2014</option>
 					<option value="2015">2015</option>
 					<option value="2016">2016</option>
 					<option value="2017">2017</option>
