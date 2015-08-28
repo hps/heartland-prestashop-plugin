@@ -1,13 +1,17 @@
 (function ($) {
   $(document).ready(function () {
-    $('.securesubmit-submit-button').bind('click', secureSubmitFormHandler);
+    bindHandler();
   });
 
   $(document).ajaxComplete(function () {
-    setTimeout(function () {
-      $('.securesubmit-submit-button').bind('click', secureSubmitFormHandler);
-    }, 1000);
+    setTimeout(bindHandler, 1000);
   });
+  
+  function bindHandler() {
+    $('.securesubmit-submit-button')
+      .unbind('click', secureSubmitFormHandler)
+      .bind('click', secureSubmitFormHandler);
+  }
 
   function secureSubmitFormHandler() {
     //alert('0');
