@@ -185,7 +185,7 @@ class SecureSubmitPayment extends PaymentModule
 
 		require_once(dirname(__FILE__).'/lib/Hps.php');
         
-        $address = new Address((int)$this->context->cart->id_address_delivery);
+        $address = new Address((int)$this->context->cart->id_address_invoice);
         $address_state =  new State($address->id_state);
         $customer = new Customer($this->context->cart->id_customer);
         $amount = $this->context->cart->getOrderTotal();
