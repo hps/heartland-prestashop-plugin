@@ -97,14 +97,13 @@ img.enable {
 	border-radius: 3px;
 	font-weight:bold;
 	color:#000;
-	background:url(../../themes/default/img/bg_bt.gif) repeat-x 0 0 #f4b61b;
+	background:#f4b61b;
 	cursor: pointer;
 }
-
 #securesubmit-payment-form .securesubmit-submit-button:hover, 
 #securesubmit-payment-form-cc .securesubmit-submit-button-cc:hover {
 	text-decoration:none;
-	background-position: left -50px
+	background : #FDDE78;
 }
 
 .securesubmit-payment-errors {
