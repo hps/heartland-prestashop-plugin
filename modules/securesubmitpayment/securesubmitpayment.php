@@ -190,13 +190,13 @@ class SecureSubmitPayment extends PaymentModule
         $customer = new Customer($this->context->cart->id_customer);
         $amount = $this->context->cart->getOrderTotal();
         
-        $config = new HpsConfiguration();
+        $config = new HpsServicesConfig();
 
         $config->secretApiKey = Configuration::get('HPS_MODE') ? Configuration::get('HPS_SECRET_KEY_LIVE') : Configuration::get('HPS_SECRET_KEY_TEST');
         $config->versionNumber = '1540';
         $config->developerId = '002914';
 
-        $chargeService = new HpsChargeService($config);
+        $chargeService = new HpsCreditService($config);
 
         $hpsaddress = new HpsAddress();
         $hpsaddress->address = $address->address1;
@@ -255,7 +255,7 @@ class SecureSubmitPayment extends PaymentModule
 				$payment = $new_order->getOrderPaymentCollection();
 				if (isset($payment[0]))
 				{
-					$payment[0]->transaction_id = pSQL($result->transactionId);
+					$payment[0]->transaction_id = pSQL($response->transactionId);
 					$payment[0]->save();
 				}
 			}
