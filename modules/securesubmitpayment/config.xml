@@ -2,7 +2,7 @@
         <module>
             <name>securesubmitpayment</name>
             <displayName><![CDATA[SecureSubmit]]></displayName>
-            <version><![CDATA[1.0.0]]></version>
+            <version><![CDATA[1.0.1]]></version>
             <description><![CDATA[Payments made easy - Start securely accepting credit card payments instantly.]]></description>
             <author><![CDATA[Heartland Payment Systems]]></author>
             <tab><![CDATA[payments_gateways]]></tab>
