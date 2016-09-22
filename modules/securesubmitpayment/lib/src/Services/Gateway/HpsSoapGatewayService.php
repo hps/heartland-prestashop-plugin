@@ -296,16 +296,33 @@ class HpsSoapGatewayService extends HpsGatewayServiceAbstract implements HpsGate
 
         return $secureEcommerce;
     }
-
+ /*
+  * @link https://github.com/hps/heartland-php/pull/21
+  * @description resolves a recursion issue identified in the link above
+  */
     public function _hydrateTokenData($token, DOMDocument $xml, $cardPresent = false, $readerPresent = false)
     {
         if (!$token instanceof HpsTokenData) {
+            $tokenValue = $token;
             $token = new HpsTokenData();
-            $token->tokenValue = $token;
+            $token->tokenValue = $tokenValue;
         }
 
         $tokenData = $xml->createElement('hps:TokenData');
         $tokenData->appendChild($xml->createElement('hps:TokenValue', $token->tokenValue));
+
+        if (isset($token->expMonth)) {
+            $tokenData->appendChild($xml->createElement('hps:ExpMonth', $token->expMonth));
+        }
+
+        if (isset($token->expYear)) {
+            $tokenData->appendChild($xml->createElement('hps:ExpYear', $token->expYear));
+        }
+
+        if (isset($token->cvv)) {
+            $tokenData->appendChild($xml->createElement('hps:CVV2', $token->cvv));
+        }
+
         $tokenData->appendChild($xml->createElement('hps:CardPresent', ($cardPresent ? 'Y' : 'N')));
         $tokenData->appendChild($xml->createElement('hps:ReaderPresent', ($readerPresent ? 'Y' : 'N')));
         return $tokenData;

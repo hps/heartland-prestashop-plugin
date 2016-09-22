@@ -60,6 +60,7 @@ if (!defined('HPS_SDK_LOADED')) {
     require_once 'Infrastructure/Enums/HpsPayPlanScheduleFrequency.php';
     require_once 'Infrastructure/Enums/HpsPayPlanScheduleStatus.php';
     require_once 'Infrastructure/Enums/HpsCentinelCheckoutType.php';
+    require_once 'Infrastructure/Enums/HpsAttachmentType.php';
     require_once 'Infrastructure/Validation/HpsGatewayResponseValidation.php';
     require_once 'Infrastructure/Validation/HpsInputValidation.php';
     require_once 'Infrastructure/Validation/HpsIssuerResponseValidation.php';
@@ -76,6 +77,7 @@ if (!defined('HPS_SDK_LOADED')) {
     require_once 'Entities/HpsTransactionDetails.php';
     require_once 'Entities/HpsTransactionHeader.php';
     require_once 'Entities/HpsTransactionStatus.php';
+    require_once 'Entities/Attachment/HpsAttachment.php';
     require_once 'Entities/Batch/HpsBatch.php';
     require_once 'Entities/Check/HpsCheck.php';
     require_once 'Entities/Check/HpsCheckHolder.php';
@@ -96,6 +98,7 @@ if (!defined('HPS_SDK_LOADED')) {
     require_once 'Entities/Credit/HpsCPCData.php';
     require_once 'Entities/Credit/HpsCPCEdit.php';
     require_once 'Entities/Credit/HpsVoid.php';
+    require_once 'Entities/Credit/HpsManageTokensResponse.php';
     require_once 'Entities/Debit/HpsDebitAddValue.php';
     require_once 'Entities/Debit/HpsDebitReturn.php';
     require_once 'Entities/Debit/HpsDebitReversal.php';
@@ -154,6 +157,7 @@ if (!defined('HPS_SDK_LOADED')) {
     require_once 'Services/Gateway/HpsGiftCardService.php';
     require_once 'Services/Gateway/HpsPayPlanService.php';
     require_once 'Services/Gateway/HpsTokenService.php';
+    require_once 'Services/Gateway/HpsAttachmentService.php';
     require_once 'Services/Gateway/AltPayment/HpsAltPaymentService.php';
     require_once 'Services/Gateway/AltPayment/HpsPayPalService.php';
     require_once 'Services/Gateway/AltPayment/HpsMasterPassService.php';
@@ -195,6 +199,7 @@ if (!defined('HPS_SDK_LOADED')) {
     require_once 'Services/Fluent/Gateway/GiftCard/HpsGiftCardServiceRewardBuilder.php';
     require_once 'Services/Fluent/Gateway/GiftCard/HpsGiftCardServiceSaleBuilder.php';
     require_once 'Services/Fluent/Gateway/GiftCard/HpsGiftCardServiceVoidBuilder.php';
+    require_once 'Services/Fluent/Gateway/Credit/HpsCreditServiceUpdateTokenExpirationBuilder.php';
     require_once 'Services/Fluent/Gateway/HpsFluentCheckService.php';
     require_once 'Services/Fluent/Gateway/HpsFluentCreditService.php';
     require_once 'Services/Fluent/Gateway/HpsFluentDebitService.php';

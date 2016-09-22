@@ -35,9 +35,7 @@ class HpsCreditService extends HpsSoapGatewayService
         if ($cardOrToken instanceof HpsCreditCard) {
             $cardData->appendChild($this->_hydrateManualEntry($cardOrToken, $xml));
         } else {
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardOrToken->tokenValue));
-            $cardData->appendChild($tokenData);
+            $cardData->appendChild($this->_hydrateTokenData($cardOrToken, $xml));
         }
         $cardData->appendChild($xml->createElement('hps:TokenRequest', ($requestMultiUseToken) ? 'Y' : 'N'));
         if ($cpcReq) {
@@ -109,9 +107,7 @@ class HpsCreditService extends HpsSoapGatewayService
         if ($cardOrToken instanceof HpsCreditCard) {
             $cardData->appendChild($this->_hydrateManualEntry($cardOrToken, $xml));
         } else {
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardOrToken->tokenValue));
-            $cardData->appendChild($tokenData);
+            $cardData->appendChild($this->_hydrateTokenData($cardOrToken, $xml));
         }
         if ($cpcReq) {
             $hpsBlock1->appendChild($xml->createElement('hps:CPCReq', 'Y'));
@@ -153,9 +149,7 @@ class HpsCreditService extends HpsSoapGatewayService
             $hpsBlock1->appendChild($cardData);
         } else if ($cardOrTokenOrPMKey instanceof HpsTokenData) {
             $cardData = $xml->createElement('hps:CardData');
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardOrTokenOrPMKey->tokenValue));
-            $cardData->appendChild($tokenData);
+            $cardData->appendChild($this->_hydrateTokenData($cardOrTokenOrPMKey, $xml));
             $hpsBlock1->appendChild($cardData);
         } else {
             $hpsBlock1->appendChild($xml->createElement('hps:PaymentMethodKey', $cardOrTokenOrPMKey));
@@ -210,6 +204,48 @@ class HpsCreditService extends HpsSoapGatewayService
         $trans->responseText = '';
 
         return $trans;
+    }
+
+    /** builds soap transaction for Portico so that  expiration dates can be updated for expired cards with a new current issuance
+     * @param string $tokenValue
+     * @param int    $expMonth 1-12 padding will be handled automatically
+     * @param int    $expYear  must be 4 digits.
+     *
+     * @return \HpsManageTokensResponse
+     * @throws \HpsException
+     * @throws \HpsGatewayException
+     */
+    public function updateTokenExpiration($tokenValue, $expMonth, $expYear)  {
+        // new DOM
+        $xml = new DOMDocument();
+        $hpsTransaction = $xml->createElement('hps:Transaction');
+        $hpsManageTokens = $xml->createElement('hps:ManageTokens');
+
+        $hpsManageTokens->appendChild($xml->createElement('hps:TokenValue', trim((string)$tokenValue)));
+
+        $hpsTokenActions = $xml->createElement('hps:TokenActions');
+        $hpsSet = $xml->createElement('hps:Set');
+        $hpsAttribute = $xml->createElement('hps:Attribute');
+
+            $hpsAttribute->appendChild($xml->createElement('hps:Name', 'ExpMonth'));
+            $hpsAttribute->appendChild($xml->createElement('hps:Value', (string)sprintf("%'.02d", (int)$expMonth)));
+
+        $hpsSet->appendChild($hpsAttribute);
+
+        $hpsAttribute = $xml->createElement('hps:Attribute');
+
+            $hpsAttribute->appendChild($xml->createElement('hps:Name', 'ExpYear'));
+            $hpsAttribute->appendChild($xml->createElement('hps:Value', (string)$expYear));
+
+        $hpsSet->appendChild($hpsAttribute);
+
+        $hpsTokenActions->appendChild($hpsSet);
+
+        $hpsManageTokens->appendChild($hpsTokenActions);
+
+        $hpsTransaction->appendChild($hpsManageTokens);
+
+        return $this->_submitTransaction($hpsTransaction, 'ManageTokens');
     }
 
     public function get($transactionId)
@@ -267,9 +303,7 @@ class HpsCreditService extends HpsSoapGatewayService
             $hpsBlock1->appendChild($cardDataElement);
         } else if ($cardData instanceof HpsTokenData) {
             $cardDataElement = $xml->createElement('hps:CardData');
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardData->tokenValue));
-            $cardDataElement->appendChild($tokenData);
+            $cardDataElement->appendChild($this->_hydrateTokenData($cardData, $xml));
             $hpsBlock1->appendChild($cardDataElement);
         } else {
             $hpsBlock1->appendChild($xml->createElement('hps:GatewayTxnId', $cardData));
@@ -286,8 +320,18 @@ class HpsCreditService extends HpsSoapGatewayService
 
         return $this->_submitTransaction($hpsTransaction, 'CreditReturn', (isset($details->clientTransactionId) ? $details->clientTransationId : null));
     }
-
-    public function reverse($cardData, $amount, $currency, $details = null)
+     /**
+     * @param HpsCreditCard|HpsTokenData|int                $cardData GatewayTxnId
+     * @param float                                         $amount
+     * @param USD                                           $currency
+     * @param null|HpsTransactionDetails                    $details
+     * @param null|float                                    $authAmount
+     * @return HpsReversal
+     * @throws HpsException
+     * @throws HpsGatewayException
+     * @throws HpsInvalidRequestException
+     */
+    public function reverse($cardData, $amount, $currency, $details = null, $authAmount = null)
     {
         HpsInputValidation::checkCurrency($currency);
         $this->_currency = $currency;
@@ -299,15 +343,16 @@ class HpsCreditService extends HpsSoapGatewayService
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
+        if ($authAmount !== null){
+            $hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));
+        }
         $cardDataElement = null;
         if ($cardData instanceof HpsCreditCard) {
             $cardDataElement = $xml->createElement('hps:CardData');
             $cardDataElement->appendChild($this->_hydrateManualEntry($cardData, $xml));
         } else if ($cardData instanceof HpsTokenData) {
             $cardDataElement = $xml->createElement('hps:CardData');
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardData->tokenValue));
-            $cardDataElement->appendChild($tokenData);
+            $cardDataElement->appendChild($this->_hydrateTokenData($cardData, $xml));
         } else {
             $cardDataElement = $xml->createElement('hps:GatewayTxnId', $cardData);
         }
@@ -337,9 +382,7 @@ class HpsCreditService extends HpsSoapGatewayService
         if ($cardOrToken instanceof HpsCreditCard) {
             $cardData->appendChild($this->_hydrateManualEntry($cardOrToken, $xml));
         } else {
-            $tokenData = $xml->createElement('hps:TokenData');
-            $tokenData->appendChild($xml->createElement('hps:TokenValue', $cardOrToken->tokenValue));
-            $cardData->appendChild($tokenData);
+            $cardData->appendChild($this->_hydrateTokenData($cardOrToken, $xml));
         }
         $cardData->appendChild($xml->createElement('hps:TokenRequest', ($requestMultiUseToken) ? 'Y' : 'N'));
 
@@ -424,6 +467,17 @@ class HpsCreditService extends HpsSoapGatewayService
         }
     }
 
+    /**
+     * @param      $transaction
+     * @param      $txnType
+     * @param null $clientTxnId
+     * @param null $cardData
+     *
+     * @return array|null
+     * @throws \HpsCreditException
+     * @throws \HpsException
+     * @throws \HpsGatewayException
+     */
     private function _submitTransaction($transaction, $txnType, $clientTxnId = null, $cardData = null)
     {
         $options = array();
@@ -484,6 +538,9 @@ class HpsCreditService extends HpsSoapGatewayService
                 break;
             case 'RecurringBilling':
                 $rvalue = HpsRecurringBilling::fromDict($response, $txnType);
+                break;
+            case 'ManageTokens':
+                $rvalue = HpsManageTokensResponse::fromDict($response);
                 break;
             default:
                 break;
