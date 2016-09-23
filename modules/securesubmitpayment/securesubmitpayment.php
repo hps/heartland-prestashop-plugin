@@ -1,7 +1,6 @@
 <?php
 if (!defined('_PS_VERSION_'))
 	exit;
-
 /**
  * This payment module enables the processing of
  * credit card transactions through the SecureSubmit
@@ -16,6 +15,7 @@ class SecureSubmitPayment extends PaymentModule
 	public $limited_countries = array('us');
 	public $limited_currencies = array('USD');
 	protected $backward = false;
+    const ONE_MINUTE_IN_SECONDS = 60;
 
 	public function __construct()
 	{
@@ -219,7 +219,39 @@ class SecureSubmitPayment extends PaymentModule
         $details->invoiceNumber = $this->context->cart->id;
         $details->memo = 'PrestaShop Order Number: '.(int)$this->context->cart->id;
 
+
+
+		/** Currently saved plugin settings */
+		/** This is the message show to the consumer if the rule is flagged */
+		$fraud_message              = (string)  $this->getVelocityMsg();
+		/** Maximum number of failures allowed before rule is triggered */
+		$fraud_velocity_attempts    = (int)     $this->getVelocityLimit();
+		/** Maximum amount of time in minutes to track failures. If this amount of time elapse between failures then the counter($HeartlandHPS_FailCount) will reset */
+		$fraud_velocity_timeout     = (int)     $this->getVelocityTimeOut();
+		/** Running count of failed transactions from the current IP*/
+		$HeartlandHPS_FailCount     = (int)     $this->getVelocityCount();
+		/** Defaults to true or checks actual settings for this plugin from $settings. If true the following settings are applied:
+		$fraud_message
+		 *
+		$fraud_velocity_attempts
+		 *
+		$fraud_velocity_timeout
+		 *
+		 */
+		$enable_fraud               = (bool)    $this->getVelocitySetting();
+
+
 		try	{
+			/**
+			 * if fraud_velocity_attempts is less than the $HeartlandHPS_FailCount then we know
+			 * far too many failures have been tried
+			 */
+			if ($enable_fraud && $HeartlandHPS_FailCount >= $fraud_velocity_attempts) {
+				sleep(5);
+				$issuerResponse = (string)$this->getVelocityLastResponse();
+				throw new HpsException(sprintf('%s %s', $fraud_message, $issuerResponse));
+			}
+
             $response = $chargeService->charge(
                 $amount,
                 "usd",
@@ -230,13 +262,21 @@ class SecureSubmitPayment extends PaymentModule
                 
             $ResponseMessage = 'Success';
 		} catch(HpsException $e) {
-			$this->failPayment($e->getMessage());
+
+			// if advanced fraud is enabled, increment the error count
+			if ($enable_fraud) {
+				$this->incVelocityCounter();
+				if ($this->getVelocityCount() < $fraud_velocity_attempts) {
+                    $this->setVelocityLastResponse($e->getMessage());
+				}
+			}
+			$this->failPayment($this->getVelocityCount() . $e->getMessage());
             $ResponseMessage = 'Failure';
 		}
 
 		/* Log Transaction details */
 		if (!isset($message)) {
-			$order_status = (int)Configuration::get('HPS_PAYMENT_ORDER_STATUS');
+			$order_status = (int) Configuration::get('HPS_PAYMENT_ORDER_STATUS');
 			$message = $this->l('SecureSubmit Transaction Details:')."\n\n".
 			$this->l('Transaction ID:').' '.$response->transactionId."\n";
 		}
@@ -353,11 +393,16 @@ class SecureSubmitPayment extends PaymentModule
 				'HPS_PUBLIC_KEY_LIVE' => $_POST['securesubmit_public_key_live'], 
 				'HPS_SECRET_KEY_TEST' => $_POST['securesubmit_secret_key_test'],
 				'HPS_SECRET_KEY_LIVE' => $_POST['securesubmit_secret_key_live'], 
+				'HPS_ENABLE_FRAUD' => $_POST['securesubmit_enable_fraud'],
+				'HPS_FRAUD_MESSAGE' => $_POST['securesubmit_fraud_message'],
+				'HPS_FRAUD_VELOCITY_ATTEMPTS' => $_POST['securesubmit_fraud_velocity_attempts'],
+				'HPS_FRAUD_VELOCITY_TIMEOUT' => $_POST['securesubmit_fraud_velocity_timeout'],
 				'HPS_PAYMENT_ORDER_STATUS' => (int)$_POST['securesubmit_payment_status']
 			);
 
 			foreach ($configuration_values as $configuration_key => $configuration_value) {
-				Configuration::updateValue($configuration_key, $configuration_value);
+                $configuration_value = trim(filter_var($configuration_value, FILTER_SANITIZE_STRING));
+				Configuration::updateValue($configuration_key, $configuration_value); // <<-- this can actually allow some code into the db.
             }
 		}
 
@@ -428,6 +473,36 @@ class SecureSubmitPayment extends PaymentModule
 						<td><input style="width: 450px;" type="text" name="securesubmit_secret_key_live" value="'.Tools::safeOutput(Configuration::get('HPS_SECRET_KEY_LIVE')).'" /></td>
 					</tr>
 				</table>
+<!-- VELOCITY CHECKS-->
+				<h2 style="color: #F60;">Velocity Limits</h2>
+
+				<table width="100%">
+
+					<tr>
+					<td width="50%;"><strong>Velocity Settings</strong><br />&nbsp;</td>
+					<td>
+					<input type="radio" name="securesubmit_enable_fraud" value="0"'.(!$this->getVelocitySetting() ? ' checked="checked"' : '').' /> <span>Disabled</span>&nbsp;
+					<input type="radio" name="securesubmit_enable_fraud" value="1"'.($this->getVelocitySetting() ? ' checked="checked"' : '').' /> <span>Enabled</span><br />&nbsp;</td>
+					</tr>
+
+					<tr>
+					<td width="50%;"><strong>Display Message</strong><br />&nbsp;</td>
+					<td><input style="width: 450px;" type="text" name="securesubmit_fraud_message"
+						value="'.$this->getVelocityMsg().'" /><br />&nbsp;</td>
+					</tr>
+
+					<tr>
+					<td width="50%;"><strong>How many failed attempts before blocking?</strong><br />&nbsp;</td>
+					<td><input style="width: 450px;" type="text" name="securesubmit_fraud_velocity_attempts"
+						value="'.$this->getVelocityLimit().'" /><br />&nbsp;</td>
+					</tr>
+
+					<tr>
+					<td width="50%;"><strong>How long (in minutes) should we keep a tally of recent failures?</strong><br /><br />&nbsp;</td>
+					<td><input style="width: 450px;" type="text" name="securesubmit_fraud_velocity_timeout"
+						value="'.$this->getVelocityTimeOut().'" /><br />&nbsp;</td>
+					</tr>
+				</table>
 
 
                 ';
@@ -458,4 +533,110 @@ class SecureSubmitPayment extends PaymentModule
 
 		return $output;
 	}
+
+    /** If the Velocity checks are enabled
+     * @return bool
+     */
+    private function getVelocitySetting(){
+        $this->setVelocityTimer();
+        return (bool)$this->get_setting("ENABLE_FRAUD", '1') ;
+    }
+
+    /** Gets the message to be displayed to the end user if the rule is triggered
+     * @return string
+     */
+    private function getVelocityMsg(){
+        return $this->get_setting("FRAUD_MESSAGE", 'Please contact us to complete the transaction.');
+    }
+
+    /** Number of minutes between attempts to retain failure counts
+     * @return int
+     */
+    private function getVelocityTimeOut(){
+        return (int) $this->get_setting("FRAUD_VELOCITY_TIMEOUT", '10');
+    }
+
+    /** Number of failures before the rule is applied
+     * @return int
+     */
+    private function getVelocityLimit(){
+        return (int) $this->get_setting("FRAUD_VELOCITY_ATTEMPTS", '3');
+    }
+
+    /** Sets the timer to the current time in seconds. Unix time stamp
+     * @return mixed
+     */
+    private function setVelocityTimer(){
+        $this->context->cookie->LastCheck = time();
+        return $this->context->cookie->LastCheck;
+    }
+
+    /** Checks if the current settings have timed out
+     * @return bool
+     */
+    private function isVelocityTimedOut(){
+        return (bool) ($this->context->cookie->LastCheck < (time()-(ONE_MINUTE_IN_SECONDS*$this->getVelocityTimeOut())));
+    }
+
+    /** Returns the current if any count of Failed transactions
+     * @return int
+     */
+    private function getVelocityCount(){
+        return (int) $this->context->cookie->VelocityCount;
+        }
+
+    /** increment or reset the velocity counter. This counter is limited in duration by \SecureSubmitPayment::isVelocityTimedOut
+     * @return int
+     */
+    private function incVelocityCounter(){
+        if ($this->getVelocitySetting()){
+            if ($this->isVelocityTimedOut()){
+                $this->context->cookie->VelocityCount = 0;
+            }
+            else{
+                $this->context->cookie->VelocityCount = $this->getVelocityCount() + 1;
+            }
+            $this->setVelocityTimer();
+        }
+        else{
+            $this->context->cookie->VelocityCount = 0;
+        }
+        return (int) $this->getVelocityCount();
+    }
+
+    /** gets any response currently stored
+     * @param $IssuerResponse
+     */
+    private function getVelocityLastResponse() {
+        $re = '';
+        if ($this->getVelocitySetting() && $this->isVelocityTimedOut()){
+            $re = $this->context->cookie->IssuerResponse;
+            $this->setVelocityTimer();
+        }
+        return $re;
+    }
+
+    /** Set the last issuer response. stores it so it can be displayed back to the user on subsequent failures
+     * @return int
+     */
+    private function setVelocityLastResponse($IssuerResponse){
+        $this->context->cookie->IssuerResponse = '';
+        if ($this->getVelocitySetting()){
+            $this->context->cookie->IssuerResponse = trim(filter_var($IssuerResponse, FILTER_SANITIZE_STRING));
+        }
+        return $this->getVelocityLastResponse();
+    }
+
+    /** Uses built in Prestashop API \ToolsCore::safeOutput(\ConfigurationCore::get) to get a setting but accepts a default value to be returned if not set
+     * @param string $setting
+     * @param string $default
+     * @return string string
+     */
+    private function get_setting($setting, $default){
+        $ret = trim(Tools::safeOutput(Configuration::get('HPS_' . $setting)));
+        if ($ret === ''){
+            $ret = $default;
+        }
+        return $ret;
+    }
 }
