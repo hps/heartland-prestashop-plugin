@@ -1,47 +1,47 @@
-div.payment_module { 
-	padding-bottom: 20px; 
-	text-transform: none; 
+div.payment_module {
+	padding-bottom: 20px;
+	text-transform: none;
 }
 
-.securesubmit_title img { 
-	float: none; 
-	margin-right: 8px; 
-	margin-top: -2px; 
-	vertical-align: middle; 
+.securesubmit_title img {
+	float: none;
+	margin-right: 8px;
+	margin-top: -2px;
+	vertical-align: middle;
 }
 
-#securesubmit-payment-form label { 
-	display: inline-block; 
-	margin-bottom: 4px; 
-	text-transform: uppercase; 
+#securesubmit-payment-form label {
+	display: inline-block;
+	margin-bottom: 4px;
+	text-transform: uppercase;
 }
 
-#securesubmit-payment-form label.lowercase { 
-	text-transform: none; 
+#securesubmit-payment-form label.lowercase {
+	text-transform: none;
 }
 
-#securesubmit-payment-form input[type="text"], 
-#securesubmit-payment-form select { 
-	border: #CCCCCC solid 1px; 
-	margin-bottom: 15px; 
-	padding: 3px; 
+#securesubmit-payment-form input[type="text"],
+#securesubmit-payment-form select {
+	border: #CCCCCC solid 1px;
+	margin-bottom: 15px;
+	padding: 3px;
 }
 
-#securesubmit-payment-form input[type="checkbox"] { 
-	margin-bottom: 15px; 
+#securesubmit-payment-form input[type="checkbox"] {
+	margin-bottom: 15px;
 }
 
-#securesubmit-payment-form input.securesubmit-card-number { 
-	width: 210px; 
+#securesubmit-payment-form input.securesubmit-card-number {
+	width: 210px;
 }
 
-#securesubmit-payment-form a { 
-	display: inline; 
-	position: relative; 
+#securesubmit-payment-form a {
+	display: inline;
+	position: relative;
 }
 
-a.securesubmit-card-cvc-info { 
-	font-style: italic; 
+a.securesubmit-card-cvc-info {
+	font-style: italic;
 }
 
 a.securesubmit-card-cvc-info div.cvc-info {
@@ -60,33 +60,33 @@ a.securesubmit-card-cvc-info div.cvc-info {
 	width: 300px;
 }
 
-a.securesubmit-card-cvc-info:hover div.cvc-info { 
-	display: block; 
+a.securesubmit-card-cvc-info:hover div.cvc-info {
+	display: block;
 }
 
-div.cvc-info:hover { 
-	cursor: default; 
+div.cvc-info:hover {
+	cursor: default;
 }
 
-.block-left { 
-	display: inline-block; 
-	float: left; 
-	margin-right: 20px; 
+.block-left {
+	display: inline-block;
+	float: left;
+	margin-right: 20px;
 }
 
-img.disable { 
-	opacity: 0.3; 
+img.disable {
+	opacity: 0.3;
 }
 
-img.enable { 
-	opacity: 1; 
+img.enable {
+	opacity: 1;
 }
 
-#securesubmit-payment-form-cc .securesubmit-submit-button-cc { 
-	margin-left: 5px; 
+#securesubmit-payment-form-cc .securesubmit-submit-button-cc {
+	margin-left: 5px;
 }
 
-#securesubmit-payment-form .securesubmit-submit-button, 
+#securesubmit-payment-form .securesubmit-submit-button,
 #securesubmit-payment-form-cc .securesubmit-submit-button-cc {
 	position:relative;
 	display:inline-block;
@@ -100,7 +100,7 @@ img.enable {
 	background:#f4b61b;
 	cursor: pointer;
 }
-#securesubmit-payment-form .securesubmit-submit-button:hover, 
+#securesubmit-payment-form .securesubmit-submit-button:hover,
 #securesubmit-payment-form-cc .securesubmit-submit-button-cc:hover {
 	text-decoration:none;
 	background : #FDDE78;
@@ -115,23 +115,158 @@ img.enable {
 /*	display: none;	*/
 }
 
-#securesubmit-ajax-loader { 
-	display: none; 
+#securesubmit-ajax-loader {
+	display: none;
 }
 
-#securesubmit-ajax-loader img { 
+#securesubmit-ajax-loader img {
 	position: relative;
 	top: 3px;
 	margin-left: 10px;
 }
 
-#securesubmit-payment-form input, 
-#securesubmit-payment-form select { 
-	margin-left: 0; 
+#securesubmit-payment-form input,
+#securesubmit-payment-form select {
+	margin-left: 0;
 }
 
 .secure-icon {
 	position: relative;
 	top: 3px;
 	margin-right: 10px;
+}
+
+/*makenzie*/
+
+.secure-icon {
+	background-repeat:no-repeat;
+	height:23px;
+	width:22px;
+	vertical-align:baseline;
+}
+
+.accepted-cards {
+	width:400px;
+	height:50px;
+	margin:20px 0px;
+}
+
+
+#securesubmit-payment-form label {
+	font-weight:100;
+	margin-top:5px;
+}
+
+#securesubmit-payment-form textarea:focus, input:focus {
+  outline:1px solid #3989e3;;
+	border:1px solid #3989e3;
+	border-radius:0px;
+}
+
+#securesubmit-payment-form input.securesubmit-card-number {
+	width:100%;
+	height:40px;
+	background-image:url('img/ss-inputcard-blank@2x.png');
+	background-repeat:no-repeat;
+	background-size:55px 33px;
+	background-position:right;
+	padding-left:5px;
+}
+/*cc-types*/
+.discover-icon {
+	background-image:url('img/ss-inputcard-discover@2x.png');
+	background-repeat:no-repeat;
+	background-size:75px 33px;
+	background-position:right;
+}
+
+.visa-icon {
+	background-image:url('img/ss-inputcard-visa@2x.png');
+	background-repeat:no-repeat;
+	background-size:70px 33px;
+	background-position:right;
+}
+
+.jcb-icon {
+	background-image:url('img/ss-inputcard-jcb@2x.png');
+	background-repeat:no-repeat;
+	background-size:55px 33px;
+	background-position:right;
+}
+
+.amex-icon {
+	background-image:url('img/ss-inputcard-amex@2x.png');
+	background-repeat:no-repeat;
+	background-size:45px 33px;
+	background-position:right;
+}
+
+.mastercard-icon {
+	background-image:url('img/ss-inputcard-mastercard@2x.png');
+	background-repeat:no-repeat;
+	background-size:52px 36px;
+	background-position:right;
+}
+
+#securesubmit-payment-form input.securesubmit-card-expiry-year {
+	height:40px;
+	width:100%;
+	padding-left:5px;
+
+}
+
+#securesubmit-payment-form input.securesubmit-card-cvc {
+		height:42px;
+		width:48%;
+		background-image:url('img/cvv1.png');
+		background-repeat:no-repeat;
+		background-size:67px 39px;
+		background-position:right;
+		padding-left:5px;
+		padding-right:1px;
+
+}
+
+
+
+
+.block-left {
+	width:50%;
+}
+
+#securesubmit-payment-form .securesubmit-submit-button{
+background-color:#3989e3;
+color:#ffffff;
+border-radius:0px;
+border:1px solid #2b588a;
+padding:10px;
+font-weight:500;
+font-size:larger;
+}
+
+#securesubmit-payment-form .securesubmit-submit-button:hover {
+	background-color:#2b588a;
+}
+
+@media (max-width:767px) {
+	.accepted-cards {
+		width:305px;
+		height:39px;
+		margin:10px 0px;
+	}
+
+	#securesubmit-payment-form input.securesubmit-card-expiry-year,
+	#securesubmit-payment-form input.securesubmit-card-cvc {
+		width:100%;
+	}
+
+	.block-left {
+		display:block;
+		width:100%;
+	}
+
+	#securesubmit-payment-form label {
+		display:block;
+		margin-bottom:-10px;
+	}
 }
