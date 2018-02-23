@@ -6,7 +6,7 @@
   $(document).ajaxComplete(function () {
     setTimeout(bindHandler, 1000);
   });
-  
+
   function bindHandler() {
     $('.securesubmit-submit-button')
       .unbind('click', secureSubmitFormHandler)
@@ -19,8 +19,24 @@
       if ($('input.securesubmitToken').size() === 0) {
         var card  = $('.securesubmit-card-number').val().replace(/\D/g, '');
         var cvc  = $('.securesubmit-card-cvc').val();
-        var month = $('.securesubmit-card-expiry-month').val();
-        var year = $('.securesubmit-card-expiry-year').val();
+        var month = '';
+        var year = '';
+
+        if (
+          $('.securesubmit-card-expiry') &&
+          $('.securesubmit-card-expiry').val()
+        ) {
+          var date = $('.securesubmit-card-expiry').val().split('/');
+
+          if (date[0]) {
+            month = date[0].trim();
+          }
+
+          if (date[1]) {
+            year = date[1].trim();
+          }
+        }
+
         hps.tokenize({
           data: {
             public_key: securesubmit_public_key,
