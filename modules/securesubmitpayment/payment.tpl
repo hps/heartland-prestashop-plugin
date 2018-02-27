@@ -14,7 +14,7 @@
 		<div>
 			<div class="block-left">
 				<label>{l s='Expiration (MM/YYYY*)' mod='securesubmitpayment'}</label><br />
-				<input type="text" size="4" autocomplete="off" class="securesubmit-card-expiry-year" placeholder="MM / YYYY"/>
+				<input type="text" size="4" autocomplete="off" class="securesubmit-card-expiry" placeholder="MM / YYYY"/>
 	        </div>
 	        <div>
 				<label>{l s='CVC*' mod='securesubmitpayment'}</label><br />
