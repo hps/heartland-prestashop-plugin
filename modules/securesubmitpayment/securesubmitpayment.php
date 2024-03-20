@@ -138,7 +138,7 @@ class SecureSubmitPayment extends PaymentModule
 		$this->context->controller->addCSS($this->_path.'securesubmit.css');
         $this->context->controller->addJS($this->_path.'assets'.DS.'js'.DS.'secure.submit-1.0.2.js');
         $this->context->controller->addJS($this->_path.'assets'.DS.'js'.DS.'securesubmit.js');
-
+		$this->context->controller->addJS('https://js.globalpay.com/v1/globalpayments.js');
 		return '<script type="text/javascript">var securesubmit_public_key = \''.addslashes(Configuration::get('HPS_MODE') ? Configuration::get('HPS_PUBLIC_KEY_LIVE') : Configuration::get('HPS_PUBLIC_KEY_TEST')).'\';</script>';
 	}
 

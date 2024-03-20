@@ -3,6 +3,19 @@ div.payment_module {
 	text-transform: none;
 }
 
+div.securesubmitFormContainer .disable-button{
+	pointer-events: none;
+	opacity: 0.65;
+}
+
+div.ss-frame-container iframe{
+	width: 100%;
+}
+
+div#submit_button{
+	margin: 0px 15px;
+}
+
 .securesubmit_title img {
 	float: none;
 	margin-right: 8px;
@@ -154,7 +167,7 @@ img.enable {
 
 #securesubmit-payment-form label {
 	font-weight:100;
-	margin-top:5px;
+	margin-top: 5px;
 }
 
 #securesubmit-payment-form textarea:focus, input:focus {
