@@ -11,7 +11,6 @@
         var submit_button = document.getElementById('submit_button');
         submit_button.classList.remove("disable-button");
     } else {
-      //alert ('[' + response.token_value + ']');
       $form.append("<input type='hidden' class='securesubmitToken' name='securesubmitToken' value='" + response.paymentReference + "'/>");
       $form.submit();
     }
@@ -104,5 +103,4 @@
       $(".error-message").remove();
     }
   }
-
 }(jQuery));

@@ -25,6 +25,5 @@
 			<div id="submit_button" class="ss-frame-container"></div>
 		</div>
 		<br/>
-		<!--<button type="submit" class="securesubmit-submit-button">{l s='Submit Payment' mod='securesubmitpayment'}</button>-->
 	</form>
 </div>
