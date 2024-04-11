@@ -7,21 +7,23 @@
 	</div>
 	<form action="{$module_dir}validation.php" method="POST" class="securesubmit-payment-form" id="securesubmit-payment-form"{if isset($securesubmit_credit_card)} style="display: none;"{/if}>
 		{if isset($smarty.get.securesubmit_error)}<div class="securesubmit-payment-errors">{$smarty.get.securesubmit_error|base64_decode|escape:html:'UTF-8'}</div>{/if}<a name="securesubmit_error" style="display:none"></a>
-		<label>{l s='Card Number*' mod='securesubmitpayment'}</label><br />
-		<input type="text" size="20" autocomplete="off" class="securesubmit-card-number" placeholder="CREDIT CARD NUMBER">
-
-		</input>
-		<div>
-			<div class="block-left">
-				<label>{l s='Expiration (MM/YYYY*)' mod='securesubmitpayment'}</label><br />
-				<input type="text" size="4" autocomplete="off" class="securesubmit-card-expiry" placeholder="MM / YYYY"/>
-	        </div>
-	        <div>
-				<label>{l s='CVC*' mod='securesubmitpayment'}</label><br />
-				<input type="text" size="4" autocomplete="off" class="securesubmit-card-cvc" placeholder="CVC"/>
-			</div>
-        </div>
+		<div class="form-group required col-md-12">
+			<label>{l s='Card Number*' mod='securesubmitpayment'}</label>
+			<div id="securesubmitIframeCardNumber" class="ss-frame-container"></div>
+		</div>
+		<div class="form-group required col-md-6">
+			<label>{l s='Expiration (MM/YYYY*)' mod='securesubmitpayment'}</label><br />
+			<div id="securesubmitIframeCardExpiration" class="ss-frame-container"></div>
+		</div>
+		<div class="form-group required col-md-6 ">
+			<label>{l s='CVC*' mod='securesubmitpayment'}</label><br />
+			<div id="securesubmitIframeCardCvv" class="ss-frame-container"></div>
+			<p class="error-message" id="gps-cvv-error"></p>
+		</div>
 		<br />
-		<button type="submit" class="securesubmit-submit-button">{l s='Submit Payment' mod='securesubmitpayment'}</button>
+		<div class="form-group required ">
+			<div id="submit_button" class="ss-frame-container"></div>
+		</div>
+		<br/>
 	</form>
 </div>
